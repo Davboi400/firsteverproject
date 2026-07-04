@@ -2,56 +2,85 @@ const boardElement = document.getElementById("board");
 const status = document.getElementById("status");
 
 const pieces = {
-    r:"♜", n:"♞", b:"♝", q:"♛", k:"♚", p:"♟",
-    R:"♖", N:"♘", B:"♗", Q:"♕", K:"♔", P:"♙"
+    r: "♜",
+    n: "♞",
+    b: "♝",
+    q: "♛",
+    k: "♚",
+    p: "♟",
+
+    R: "♖",
+    N: "♘",
+    B: "♗",
+    Q: "♕",
+    K: "♔",
+    P: "♙"
 };
 
-let board = [
-    ["r","n","b","q","k","b","n","r"],
-    ["p","p","p","p","p","p","p","p"],
-    ["","","","","","","",""],
-    ["","","","","","","",""],
-    ["","","","","","","",""],
-    ["","","","","","","",""],
-    ["P","P","P","P","P","P","P","P"],
-    ["R","N","B","Q","K","B","N","R"]
-];
+let board;
+let whiteTurn;
+let selectedSquare;
+let legalMoves;
 
-let selected = null;
-let legalMoves = [];
-let whiteTurn = true;
+function startGame() {
 
-function drawBoard(){
+    board = [
+        ["r","n","b","q","k","b","n","r"],
+        ["p","p","p","p","p","p","p","p"],
+        ["","","","","","","",""],
+        ["","","","","","","",""],
+        ["","","","","","","",""],
+        ["","","","","","","",""],
+        ["P","P","P","P","P","P","P","P"],
+        ["R","N","B","Q","K","B","N","R"]
+    ];
 
-    boardElement.innerHTML="";
+    whiteTurn = true;
+    selectedSquare = null;
+    legalMoves = [];
 
-    for(let row=0; row<8; row++){
+    drawBoard();
+}
 
-        for(let col=0; col<8; col++){
+function drawBoard() {
 
-            const square=document.createElement("div");
+    boardElement.innerHTML = "";
 
-            square.classList.add("square");
+    for (let row = 0; row < 8; row++) {
 
-            if((row+col)%2===0)
+        for (let col = 0; col < 8; col++) {
+
+            const square = document.createElement("div");
+
+            square.className = "square";
+
+            if ((row + col) % 2 === 0)
                 square.classList.add("light");
             else
                 square.classList.add("dark");
 
-            if(selected &&
-               selected.row===row &&
-               selected.col===col){
+            if (
+                selectedSquare &&
+                selectedSquare.row === row &&
+                selectedSquare.col === col
+            ) {
                 square.classList.add("selected");
             }
 
-            square.dataset.row=row;
-            square.dataset.col=col;
+            const move = legalMoves.find(m => m.row === row && m.col === col);
 
-            const piece=board[row][col];
+            if (move) {
 
-            square.textContent=pieces[piece] || "";
+                if (board[row][col] === "")
+                    square.classList.add("legal");
+                else
+                    square.classList.add("capture");
 
-            square.onclick=()=>clickSquare(row,col);
+            }
+
+            square.textContent = pieces[board[row][col]] || "";
+
+            square.onclick = () => clickSquare(row, col);
 
             boardElement.appendChild(square);
 
@@ -59,53 +88,227 @@ function drawBoard(){
 
     }
 
-    status.textContent = whiteTurn
-        ? "White to Move"
-        : "Black to Move";
+    status.textContent = whiteTurn ?
+        "White to Move" :
+        "Black to Move";
+
 }
 
-function isWhite(piece){
-    return piece && piece===piece.toUpperCase();
+function isWhite(piece) {
+
+    if (piece === "") return false;
+
+    return piece === piece.toUpperCase();
+
 }
 
-function clickSquare(row,col){
+function clickSquare(row, col) {
 
     const piece = board[row][col];
 
-    if(selected===null){
+    // Selecting a piece
+    if (!selectedSquare) {
 
-        if(piece==="") return;
+        if (piece === "") return;
 
-        if(whiteTurn && !isWhite(piece)) return;
+        if (whiteTurn && !isWhite(piece)) return;
 
-        if(!whiteTurn && isWhite(piece)) return;
+        if (!whiteTurn && isWhite(piece)) return;
 
-        selected={row,col};
+        selectedSquare = { row, col };
 
-        drawBoard();
-
-        return;
-    }
-
-    if(selected.row===row && selected.col===col){
-
-        selected=null;
+        legalMoves = getLegalMoves(row, col);
 
         drawBoard();
 
         return;
+
     }
 
-    board[row][col]=board[selected.row][selected.col];
+    // Deselect
+    if (
+        selectedSquare.row === row &&
+        selectedSquare.col === col
+    ) {
 
-    board[selected.row][selected.col]="";
+        selectedSquare = null;
+        legalMoves = [];
 
-    selected=null;
+        drawBoard();
 
-    whiteTurn=!whiteTurn;
+        return;
+
+    }
+
+    const allowed = legalMoves.find(
+        move => move.row === row && move.col === col
+    );
+
+    if (!allowed) {
+
+        selectedSquare = null;
+        legalMoves = [];
+
+        drawBoard();
+
+        return;
+
+    }
+
+    board[row][col] =
+        board[selectedSquare.row][selectedSquare.col];
+
+    board[selectedSquare.row][selectedSquare.col] = "";
+
+    selectedSquare = null;
+    legalMoves = [];
+
+    whiteTurn = !whiteTurn;
 
     drawBoard();
 
 }
 
-drawBoard();
+function getLegalMoves(row, col) {
+
+    const piece = board[row][col];
+
+    const moves = [];
+
+    if (piece === "") return moves;
+
+    // White Pawn
+
+    if (piece === "P") {
+
+        if (
+            row > 0 &&
+            board[row - 1][col] === ""
+        ) {
+
+            moves.push({
+                row: row - 1,
+                col: col
+            });
+
+            if (
+                row === 6 &&
+                board[row - 2][col] === ""
+            ) {
+
+                moves.push({
+                    row: row - 2,
+                    col: col
+                });
+
+            }
+
+        }
+
+        if (
+            row > 0 &&
+            col > 0 &&
+            board[row - 1][col - 1] !== "" &&
+            !isWhite(board[row - 1][col - 1])
+        ) {
+
+            moves.push({
+                row: row - 1,
+                col: col - 1
+            });
+
+        }
+
+        if (
+            row > 0 &&
+            col < 7 &&
+            board[row - 1][col + 1] !== "" &&
+            !isWhite(board[row - 1][col + 1])
+        ) {
+
+            moves.push({
+                row: row - 1,
+                col: col + 1
+            });
+
+        }
+
+    }
+
+    // Black Pawn
+
+    if (piece === "p") {
+
+        if (
+            row < 7 &&
+            board[row + 1][col] === ""
+        ) {
+
+            moves.push({
+                row: row + 1,
+                col: col
+            });
+
+            if (
+                row === 1 &&
+                board[row + 2][col] === ""
+            ) {
+
+                moves.push({
+                    row: row + 2,
+                    col: col
+                });
+
+            }
+
+        }
+
+        if (
+            row < 7 &&
+            col > 0 &&
+            board[row + 1][col - 1] !== "" &&
+            isWhite(board[row + 1][col - 1])
+        ) {
+
+            moves.push({
+                row: row + 1,
+                col: col - 1
+            });
+
+        }
+
+        if (
+            row < 7 &&
+            col < 7 &&
+            board[row + 1][col + 1] !== "" &&
+            isWhite(board[row + 1][col + 1])
+        ) {
+
+            moves.push({
+                row: row + 1,
+                col: col + 1
+            });
+
+        }
+
+    }
+
+    return moves;
+
+}
+
+// Buttons
+
+document
+.getElementById("newGame")
+.onclick = startGame;
+
+document
+.getElementById("undo")
+.onclick = () => {
+
+    alert("Undo is coming soon!");
+
+};
+
+startGame();
