@@ -29,14 +29,17 @@ h1{
 }
 
 #board{
-
     display:grid;
-
     grid-template-columns:repeat(8,80px);
-
     grid-template-rows:repeat(8,80px);
 
+    width:640px;
+    height:640px;
+
     border:4px solid #555;
+    border-radius:8px;
+
+    overflow:hidden;
 }
 
 .square{
@@ -120,4 +123,21 @@ button{
 
 .capture{
     box-shadow: inset 0 0 0 5px rgba(255,0,0,.5);
+}
+
+.square:hover{
+    filter:brightness(1.08);
+}
+
+button:hover{
+    background:#4a90e2;
+    color:white;
+}
+
+button{
+    transition:.2s;
+}
+
+.square{
+    transition:.15s;
 }
