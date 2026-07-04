@@ -18,6 +18,7 @@ let board = [
 ];
 
 let selected = null;
+let legalMoves = [];
 let whiteTurn = true;
 
 function drawBoard(){
