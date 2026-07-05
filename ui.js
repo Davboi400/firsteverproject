@@ -9,3 +9,5 @@ document
     alert("Undo coming soon!");
 
 };
+
+startGame();
