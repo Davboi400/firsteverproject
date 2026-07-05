@@ -119,7 +119,67 @@ function getPawnMoves(row, col) {
 
 function getKnightMoves(row, col) {
 
-    // We'll build this next.
-    return [];
+    const piece = game.board[row][col];
+
+    const moves = [];
+
+    const offsets = [
+
+        [-2, -1],
+        [-2,  1],
+
+        [-1, -2],
+        [-1,  2],
+
+        [ 1, -2],
+        [ 1,  2],
+
+        [ 2, -1],
+        [ 2,  1]
+
+    ];
+
+    for (const [dr, dc] of offsets) {
+
+        const newRow = row + dr;
+        const newCol = col + dc;
+
+        // Stay on the board
+        if (
+            newRow < 0 ||
+            newRow > 7 ||
+            newCol < 0 ||
+            newCol > 7
+        ) {
+            continue;
+        }
+
+        const target = game.board[newRow][newCol];
+
+        // Empty square
+        if (target === "") {
+
+            moves.push({
+                row: newRow,
+                col: newCol
+            });
+
+            continue;
+
+        }
+
+        // Capture enemy piece
+        if (isWhite(piece) !== isWhite(target)) {
+
+            moves.push({
+                row: newRow,
+                col: newCol
+            });
+
+        }
+
+    }
+
+    return moves;
 
 }
