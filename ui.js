@@ -1,10 +1,13 @@
-window.addEventListener("DOMContentLoaded", () => {
+window.addEventListener("load", () => {
 
-    document.getElementById("newGame").onclick = () => {
+    const newGameBtn = document.getElementById("newGame");
+    const undoBtn = document.getElementById("undo");
+
+    newGameBtn.onclick = () => {
         startGame();
     };
 
-    document.getElementById("undo").onclick = () => {
+    undoBtn.onclick = () => {
         alert("Undo coming soon!");
     };
 
