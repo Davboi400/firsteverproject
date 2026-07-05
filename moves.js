@@ -12,6 +12,15 @@ function getLegalMoves(row, col) {
         case "n":
             return getKnightMoves(row, col);
 
+        case "b":
+            return getBishopMoves(row, col);
+
+        case "r":
+            return getRookMoves(row, col);
+
+        case "q":
+            return getQueenMoves(row, col);
+
         default:
             return [];
 
@@ -181,5 +190,111 @@ function getKnightMoves(row, col) {
     }
 
     return moves;
+
+}
+
+function getSlidingMoves(row, col, directions) {
+
+    const piece = game.board[row][col];
+
+    const moves = [];
+
+    for (const [dr, dc] of directions) {
+
+        let r = row + dr;
+        let c = col + dc;
+
+        while (
+
+            r >= 0 &&
+            r < 8 &&
+            c >= 0 &&
+            c < 8
+
+        ) {
+
+            const target = game.board[r][c];
+
+            // Empty square
+            if (target === "") {
+
+                moves.push({
+                    row: r,
+                    col: c
+                });
+
+            }
+
+            // Enemy piece
+            else if (isWhite(piece) !== isWhite(target)) {
+
+                moves.push({
+                    row: r,
+                    col: c
+                });
+
+                break;
+
+            }
+
+            // Friendly piece
+            else {
+
+                break;
+
+            }
+
+            r += dr;
+            c += dc;
+
+        }
+
+    }
+
+    return moves;
+
+}
+
+function getBishopMoves(row, col) {
+
+    return getSlidingMoves(row, col, [
+
+        [-1,-1],
+        [-1, 1],
+        [ 1,-1],
+        [ 1, 1]
+
+    ]);
+
+}
+
+function getRookMoves(row, col) {
+
+    return getSlidingMoves(row, col, [
+
+        [-1,0],
+        [1,0],
+        [0,-1],
+        [0,1]
+
+    ]);
+
+}
+
+function getQueenMoves(row, col) {
+
+    return getSlidingMoves(row, col, [
+
+        [-1,-1],
+        [-1, 1],
+        [ 1,-1],
+        [ 1, 1],
+
+        [-1,0],
+        [1,0],
+        [0,-1],
+        [0,1]
+
+    ]);
 
 }
