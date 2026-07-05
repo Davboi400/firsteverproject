@@ -2,12 +2,29 @@ function getLegalMoves(row, col) {
 
     const piece = game.board[row][col];
 
+    if (piece === "") return [];
+
+    switch (piece.toLowerCase()) {
+
+        case "p":
+            return getPawnMoves(row, col);
+
+        case "n":
+            return getKnightMoves(row, col);
+
+        default:
+            return [];
+
+    }
+
+}
+
+function getPawnMoves(row, col) {
+
+    const piece = game.board[row][col];
+
     const moves = [];
 
-    if (piece === "")
-        return moves;
-
-    // White Pawn
     if (piece === "P") {
 
         if (
@@ -15,20 +32,14 @@ function getLegalMoves(row, col) {
             game.board[row - 1][col] === ""
         ) {
 
-            moves.push({
-                row: row - 1,
-                col: col
-            });
+            moves.push({ row: row - 1, col });
 
             if (
                 row === 6 &&
                 game.board[row - 2][col] === ""
             ) {
 
-                moves.push({
-                    row: row - 2,
-                    col: col
-                });
+                moves.push({ row: row - 2, col });
 
             }
 
@@ -41,10 +52,7 @@ function getLegalMoves(row, col) {
             !isWhite(game.board[row - 1][col - 1])
         ) {
 
-            moves.push({
-                row: row - 1,
-                col: col - 1
-            });
+            moves.push({ row: row - 1, col: col - 1 });
 
         }
 
@@ -55,16 +63,12 @@ function getLegalMoves(row, col) {
             !isWhite(game.board[row - 1][col + 1])
         ) {
 
-            moves.push({
-                row: row - 1,
-                col: col + 1
-            });
+            moves.push({ row: row - 1, col: col + 1 });
 
         }
 
     }
 
-    // Black Pawn
     if (piece === "p") {
 
         if (
@@ -72,20 +76,14 @@ function getLegalMoves(row, col) {
             game.board[row + 1][col] === ""
         ) {
 
-            moves.push({
-                row: row + 1,
-                col: col
-            });
+            moves.push({ row: row + 1, col });
 
             if (
                 row === 1 &&
                 game.board[row + 2][col] === ""
             ) {
 
-                moves.push({
-                    row: row + 2,
-                    col: col
-                });
+                moves.push({ row: row + 2, col });
 
             }
 
@@ -98,10 +96,7 @@ function getLegalMoves(row, col) {
             isWhite(game.board[row + 1][col - 1])
         ) {
 
-            moves.push({
-                row: row + 1,
-                col: col - 1
-            });
+            moves.push({ row: row + 1, col: col - 1 });
 
         }
 
@@ -112,15 +107,19 @@ function getLegalMoves(row, col) {
             isWhite(game.board[row + 1][col + 1])
         ) {
 
-            moves.push({
-                row: row + 1,
-                col: col + 1
-            });
+            moves.push({ row: row + 1, col: col + 1 });
 
         }
 
     }
 
     return moves;
+
+}
+
+function getKnightMoves(row, col) {
+
+    // We'll build this next.
+    return [];
 
 }
