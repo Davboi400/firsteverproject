@@ -1,118 +1,120 @@
-function getLegalMoves(row,col){
+function getLegalMoves(row, col) {
 
-    const piece=board[row][col];
+    const piece = game.board[row][col];
 
-    const moves=[];
+    const moves = [];
 
-    if(piece==="")
+    if (piece === "")
         return moves;
 
-    if(piece==="P"){
+    // White Pawn
+    if (piece === "P") {
 
-        if(
-            row>0 &&
-            board[row-1][col]===""
-        ){
+        if (
+            row > 0 &&
+            game.board[row - 1][col] === ""
+        ) {
 
             moves.push({
-                row:row-1,
-                col:col
+                row: row - 1,
+                col: col
             });
 
-            if(
-                row===6 &&
-                board[row-2][col]===""
-            ){
+            if (
+                row === 6 &&
+                game.board[row - 2][col] === ""
+            ) {
 
                 moves.push({
-                    row:row-2,
-                    col:col
+                    row: row - 2,
+                    col: col
                 });
 
             }
 
         }
 
-        if(
-            row>0 &&
-            col>0 &&
-            board[row-1][col-1]!=="" &&
-            !isWhite(board[row-1][col-1])
-        ){
+        if (
+            row > 0 &&
+            col > 0 &&
+            game.board[row - 1][col - 1] !== "" &&
+            !isWhite(game.board[row - 1][col - 1])
+        ) {
 
             moves.push({
-                row:row-1,
-                col:col-1
+                row: row - 1,
+                col: col - 1
             });
 
         }
 
-        if(
-            row>0 &&
-            col<7 &&
-            board[row-1][col+1]!=="" &&
-            !isWhite(board[row-1][col+1])
-        ){
+        if (
+            row > 0 &&
+            col < 7 &&
+            game.board[row - 1][col + 1] !== "" &&
+            !isWhite(game.board[row - 1][col + 1])
+        ) {
 
             moves.push({
-                row:row-1,
-                col:col+1
+                row: row - 1,
+                col: col + 1
             });
 
         }
 
     }
 
-    if(piece==="p"){
+    // Black Pawn
+    if (piece === "p") {
 
-        if(
-            row<7 &&
-            board[row+1][col]===""
-        ){
+        if (
+            row < 7 &&
+            game.board[row + 1][col] === ""
+        ) {
 
             moves.push({
-                row:row+1,
-                col:col
+                row: row + 1,
+                col: col
             });
 
-            if(
-                row===1 &&
-                board[row+2][col]===""
-            ){
+            if (
+                row === 1 &&
+                game.board[row + 2][col] === ""
+            ) {
 
                 moves.push({
-                    row:row+2,
-                    col:col
+                    row: row + 2,
+                    col: col
                 });
 
             }
 
         }
 
-        if(
-            row<7 &&
-            col>0 &&
-            board[row+1][col-1]!=="" &&
-            isWhite(board[row+1][col-1])
-        ){
+        if (
+            row < 7 &&
+            col > 0 &&
+            game.board[row + 1][col - 1] !== "" &&
+            isWhite(game.board[row + 1][col - 1])
+        ) {
 
             moves.push({
-                row:row+1,
-                col:col-1
+                row: row + 1,
+                col: col - 1
             });
 
         }
 
-        if(
-            row<7 &&
-            col<7 &&
-            board[row+1][col+1]!=="" &&
-            isWhite(board[row+1][col+1])
-        ){
+        if (
+            row < 7 &&
+            col < 7 &&
+            game.board[row + 1][col + 1] !== "" &&
+            isWhite(game.board[row + 1][col + 1])
+        ) {
 
             moves.push({
-                row:row+1,
-                col:col+1
+                row: row + 1,
+                col: col + 1
             });
 
         }
