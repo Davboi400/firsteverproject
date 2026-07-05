@@ -37,8 +37,5 @@ function startGame() {
     game.legalMoves = [];
     game.history = [];
 
-    drawBoard();
-
 }
 
-startGame();
