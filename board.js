@@ -2,62 +2,64 @@ const boardElement = document.getElementById("board");
 const status = document.getElementById("status");
 
 const pieces = {
-    r:"♜",
-    n:"♞",
-    b:"♝",
-    q:"♛",
-    k:"♚",
-    p:"♟",
+    r: "♜",
+    n: "♞",
+    b: "♝",
+    q: "♛",
+    k: "♚",
+    p: "♟",
 
-    R:"♖",
-    N:"♘",
-    B:"♗",
-    Q:"♕",
-    K:"♔",
-    P:"♙"
+    R: "♖",
+    N: "♘",
+    B: "♗",
+    Q: "♕",
+    K: "♔",
+    P: "♙"
 };
 
 function drawBoard() {
 
     boardElement.innerHTML = "";
 
-    for(let row=0; row<8; row++){
+    for (let row = 0; row < 8; row++) {
 
-        for(let col=0; col<8; col++){
+        for (let col = 0; col < 8; col++) {
 
-            const square=document.createElement("div");
+            const square = document.createElement("div");
 
-            square.className="square";
+            square.className = "square";
 
             square.classList.add(
-                (row+col)%2===0 ? "light":"dark"
+                (row + col) % 2 === 0 ? "light" : "dark"
             );
 
-            if(
-                selectedSquare &&
-                selectedSquare.row===row &&
-                selectedSquare.col===col
-            ){
+            // Highlight selected piece
+            if (
+                game.selectedSquare &&
+                game.selectedSquare.row === row &&
+                game.selectedSquare.col === col
+            ) {
                 square.classList.add("selected");
             }
 
-            const move=legalMoves.find(
-                m=>m.row===row && m.col===col
+            // Highlight legal moves
+            const move = game.legalMoves.find(
+                m => m.row === row && m.col === col
             );
 
-            if(move){
+            if (move) {
 
-                if(board[row][col]==="")
+                if (game.board[row][col] === "")
                     square.classList.add("legal");
                 else
                     square.classList.add("capture");
 
             }
 
-            square.textContent=
-                pieces[board[row][col]] || "";
+            square.textContent =
+                pieces[game.board[row][col]] || "";
 
-            square.onclick=()=>clickSquare(row,col);
+            square.onclick = () => clickSquare(row, col);
 
             boardElement.appendChild(square);
 
@@ -65,36 +67,37 @@ function drawBoard() {
 
     }
 
-    status.textContent=
-        whiteTurn
-        ? "White to Move"
-        : "Black to Move";
+    status.textContent =
+        game.whiteTurn
+            ? "White to Move"
+            : "Black to Move";
 
 }
 
-function isWhite(piece){
+function isWhite(piece) {
 
-    if(piece==="") return false;
+    if (piece === "") return false;
 
-    return piece===piece.toUpperCase();
+    return piece === piece.toUpperCase();
 
 }
 
-function clickSquare(row,col){
+function clickSquare(row, col) {
 
-    const piece=board[row][col];
+    const piece = game.board[row][col];
 
-    if(!selectedSquare){
+    // Selecting a piece
+    if (!game.selectedSquare) {
 
-        if(piece==="") return;
+        if (piece === "") return;
 
-        if(whiteTurn && !isWhite(piece)) return;
+        if (game.whiteTurn && !isWhite(piece)) return;
 
-        if(!whiteTurn && isWhite(piece)) return;
+        if (!game.whiteTurn && isWhite(piece)) return;
 
-        selectedSquare={row,col};
+        game.selectedSquare = { row, col };
 
-        legalMoves=getLegalMoves(row,col);
+        game.legalMoves = getLegalMoves(row, col);
 
         drawBoard();
 
@@ -102,13 +105,14 @@ function clickSquare(row,col){
 
     }
 
-    if(
-        selectedSquare.row===row &&
-        selectedSquare.col===col
-    ){
+    // Deselect the selected piece
+    if (
+        game.selectedSquare.row === row &&
+        game.selectedSquare.col === col
+    ) {
 
-        selectedSquare=null;
-        legalMoves=[];
+        game.selectedSquare = null;
+        game.legalMoves = [];
 
         drawBoard();
 
@@ -116,14 +120,15 @@ function clickSquare(row,col){
 
     }
 
-    const allowed=legalMoves.find(
-        m=>m.row===row && m.col===col
+    // Check if the clicked square is a legal move
+    const allowed = game.legalMoves.find(
+        m => m.row === row && m.col === col
     );
 
-    if(!allowed){
+    if (!allowed) {
 
-        selectedSquare=null;
-        legalMoves=[];
+        game.selectedSquare = null;
+        game.legalMoves = [];
 
         drawBoard();
 
@@ -131,15 +136,16 @@ function clickSquare(row,col){
 
     }
 
-    board[row][col]=
-        board[selectedSquare.row][selectedSquare.col];
+    // Make the move
+    game.board[row][col] =
+        game.board[game.selectedSquare.row][game.selectedSquare.col];
 
-    board[selectedSquare.row][selectedSquare.col]="";
+    game.board[game.selectedSquare.row][game.selectedSquare.col] = "";
 
-    selectedSquare=null;
-    legalMoves=[];
+    game.selectedSquare = null;
+    game.legalMoves = [];
 
-    whiteTurn=!whiteTurn;
+    game.whiteTurn = !game.whiteTurn;
 
     drawBoard();
 
