@@ -1,13 +1,11 @@
-document
-.getElementById("newGame")
-.onclick = startGame;
+window.addEventListener("DOMContentLoaded", () => {
 
-document
-.getElementById("undo")
-.onclick = () => {
+    document.getElementById("newGame").onclick = () => {
+        startGame();
+    };
 
-    alert("Undo coming soon!");
+    document.getElementById("undo").onclick = () => {
+        alert("Undo coming soon!");
+    };
 
-};
-
-startGame();
+});
